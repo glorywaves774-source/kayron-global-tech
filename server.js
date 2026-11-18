@@ -22,6 +22,9 @@ const initial = { enquiries: [], projects: [], services: [
 ]};
 function readDB(){try{return JSON.parse(fs.readFileSync(DB_FILE,'utf8'));}catch{return structuredClone(initial);}}
 let db=readDB();
+// One-time import of portfolio-seed.json. Runs only if the portfolio has never been seeded and is empty,
+// so projects deleted later in the admin dashboard are not brought back on restart.
+function seedPortfolio(){if(db.portfolioSeeded)return;if(!Array.isArray(db.projects))db.projects=[];if(!db.projects.length){try{const seed=JSON.parse(fs.readFileSync(path.join(ROOT,'portfolio-seed.json'),'utf8'));const base=Date.now();db.projects=seed.filter(p=>p&&String(p.name||'').trim().length>=2).map((p,i)=>({id:crypto.randomUUID(),name:String(p.name).trim().slice(0,120),description:String(p.description||'').trim().slice(0,1500),url:safeLink(p.url),createdAt:new Date(base-i*1000).toISOString()}));}catch(e){console.warn('Portfolio seed not loaded:',e.message);}}db.portfolioSeeded=true;save();}
 function save(){const tmp=DB_FILE+'.tmp';fs.writeFileSync(tmp,JSON.stringify(db,null,2),{mode:0o600});fs.renameSync(tmp,DB_FILE);}
 function send(res,status,body,type='application/json; charset=utf-8',headers={}){res.writeHead(status,{'Content-Type':type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'DENY',...headers});res.end(type.startsWith('application/json')?JSON.stringify(body):body);}
 function parseCookies(req){return Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=').map(decodeURIComponent)).filter(x=>x.length===2));}
@@ -67,4 +70,5 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
   fs.readFile(file,(err,data)=>{if(err)return send(res,404,'Not found','text/plain; charset=utf-8');send(res,200,data,mime[path.extname(file)]||'application/octet-stream');});
  }catch(e){send(res,e.message==='Request too large'?413:400,{error:e.message==='Request too large'?e.message:'Unable to process request'});}
 });
+seedPortfolio();
 server.listen(PORT,()=>console.log(`Kayron site running on ${PORT}`));
