@@ -2,56 +2,56 @@
   {
     "name": "ZENTAVA OIMS",
     "description": "An office information management platform for transparent administration and accountability, provided and operated by Kayron as a multi-tenant service. Load-tested with 60 organisations and 16,000 beneficiaries, with encrypted nightly off-site backups.",
-    "url": ""
+    "url": "https://oims-pxlu.onrender.com"
   },
   {
     "name": "MINDI Hotel Management System",
     "description": "A hotel operations platform covering reservations and front desk, guest CRM, events and conferences, housekeeping, billing with Ghana taxes, restaurant and bar, inventory, staff rotas and reports. Offered as a subscription service with a free trial, in English and French, and installs as an app on phones and computers.",
-    "url": ""
+    "url": "https://mindi-1.onrender.com"
   },
   {
     "name": "AVIEL Accounting",
     "description": "Double-entry accounting, invoicing, payroll and Mobile Money in the browser. Country presets set the currency, tax codes and payroll rules for more than 25 countries, with Ghana PAYE and SSNIT built in. Runs as an online subscription service, on a phone, or on a single shop computer.",
-    "url": ""
+    "url": "https://aviel.onrender.com"
   },
   {
     "name": "NESTORA Rental Marketplace",
     "description": "A rental property marketplace and management platform launching in Ghana. Tenants, landlords, agents and companies each get their own dashboard, every listing shows the full move-in cost, and the platform handles verification, enquiries, inspections, tenancies and payment records.",
-    "url": ""
+    "url": "https://nestora-10.onrender.com"
   },
   {
     "name": "AYRON Hospital Management Information System",
     "description": "A modular hospital information system for one or many facilities: patient records, OPD and consultations, admissions, pharmacy, laboratory, radiology, emergency, theatre, maternity, billing and insurance claims, with role-based access and a full audit trail.",
-    "url": ""
+    "url": "https://ayron.onrender.com"
   },
   {
     "name": "KENDRA School Management",
     "description": "A subscription school management platform where many schools share one installation, each with its own separate database. Schools sign up with a free trial and choose a plan priced by number of pupils.",
-    "url": ""
+    "url": "https://kendra-474w.onrender.com"
   },
   {
     "name": "HOLIDO Website & Content Management",
     "description": "Website and content management system for Holistic Development Organisation (HOLIDO) in Tamale: programmes, projects, impact stories, news, resources and donations, with a private document library, draft and publish, revision history and automatic daily backups.",
-    "url": "https://holido.org"
+    "url": "https://holido-4df6.onrender.com"
   },
   {
     "name": "His Grace Academy Management System",
     "description": "School management system for His Grace Academy, Saboba: admissions, student records, fees and Mobile Money payments, attendance, report cards and transcripts, payroll, SMS and email messaging, and a parent and student portal.",
-    "url": ""
+    "url": "https://his-grace-academy-ld9w.onrender.com"
   },
   {
     "name": "Kings Gate International School System",
     "description": "School management system for Kings Gate International School, Saboba, covering student records, fee invoices and receipts, attendance, assessments and report cards, staff records and school reports. It became the foundation for KENDRA.",
-    "url": ""
+    "url": "https://kings-gate-school-system.onrender.com"
   },
   {
     "name": "Fr. Joseph Connolly SVD Memorial School System",
     "description": "School management system for Fr. Joseph Connolly SVD Memorial School, Saboba: student records, fees and arrears, attendance and absence alerts, report cards, timetables, staff leave and payslips, with a portal for parents and students.",
-    "url": ""
+    "url": "https://fr-joseph-connolley-svd-memorial-school.onrender.com"
   },
   {
     "name": "Divine Destiny Clinic Management System",
     "description": "Clinic management system for a private hospital in Ghana: patient registration, appointments, OPD encounters, wards and beds, admissions, invoicing and reports. Runs on one clinic computer and serves other devices on the clinic network, with automatic daily backups.",
-    "url": ""
+    "url": "https://devine-destiny-clinic-3.onrender.com"
   }
 ]
