@@ -43,6 +43,12 @@
   .core-k{font-size:190px}
   .orbit-one{width:280px;height:122px;margin:-61px 0 0 -140px}
   .orbit-two{width:340px;height:170px;margin:-85px 0 0 -170px}
+  .showcase{height:340px}
+  .shot-browser{left:16px;top:30px;width:78%}
+  .shot-phone{right:14px;bottom:30px;width:30%;border-radius:20px;padding:5px}
+  .shot-phone .shot-screen{border-radius:15px}
+  .shot-caption{left:16px;bottom:16px;max-width:60%;font-size:9.5px;letter-spacing:.06em}
+  .shot-dots{left:18px;bottom:56px}
   .chip-a{top:28px;right:22px}
   .chip-b{bottom:58px;left:18px}
   .chip-c{bottom:16px;right:16px}

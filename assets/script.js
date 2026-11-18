@@ -55,3 +55,28 @@
     }
   });
 })();
+
+// ---------- Hero showcase: cycles through screenshots of our work ----------
+(function () {
+  'use strict';
+  var box = document.querySelector('[data-showcase]');
+  if (!box) return;
+  var count = box.querySelectorAll('.shot-browser .shot').length;
+  var caption = box.querySelector('[data-caption]');
+  var dots = box.querySelectorAll('[data-go]');
+  var i = 0, timer = null;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function show(n) {
+    i = (n + count) % count;
+    box.querySelectorAll('.shot').forEach(function (img) { img.classList.toggle('is-active', Number(img.getAttribute('data-slide')) === i); });
+    dots.forEach(function (d) { if (Number(d.getAttribute('data-go')) === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
+    if (caption) caption.textContent = box.getAttribute('data-cap' + i) || '';
+  }
+  function start() { if (!reduce && !timer && count > 1) timer = setInterval(function () { show(i + 1); }, 5000); }
+  function stop() { clearInterval(timer); timer = null; }
+  dots.forEach(function (d) { d.addEventListener('click', function () { stop(); show(Number(d.getAttribute('data-go'))); start(); }); });
+  box.addEventListener('mouseenter', stop); box.addEventListener('mouseleave', start);
+  box.addEventListener('focusin', stop); box.addEventListener('focusout', start);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+  start();
+})();
