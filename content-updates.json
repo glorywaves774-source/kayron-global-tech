@@ -1,0 +1,25 @@
+[
+  {
+    "id": "2026-11-18-kings-gate-project",
+    "project": {
+      "name": "Kings Gate International School",
+      "project": "School Management System",
+      "client": "Kings Gate International School",
+      "industry": "Education",
+      "service": "Custom Software Development",
+      "description": "Kayron Global Tech Services designed and developed a customized School Management System for Kings Gate International School.\n\nThe solution supports the management of student information, staff records and essential school administration activities through a centralized digital platform.\n\nThe project demonstrates our commitment to developing practical, user-friendly and scalable software solutions for educational institutions.",
+      "url": "https://kings-gate-school-system.onrender.com",
+      "match": [
+        "Kings Gate International School System"
+      ]
+    }
+  },
+  {
+    "id": "2026-11-18-kings-gate-testimonial",
+    "testimonial": {
+      "name": "Proprietor",
+      "role": "Kings Gate International School",
+      "quote": "Working with Kayron Global Tech Services on the development of our School Management System has been a positive experience.\n\nWe appreciate their professionalism, commitment and understanding of the administrative and operational needs of an educational institution.\n\nThe software provides a centralized platform for managing important school activities, including student records, staff information, academic administration and financial records.\n\nWe are pleased with the initiative to bring technology into our school's administrative processes. The team's dedication to developing a solution tailored to our institutional needs is commendable.\n\nWe look forward to continued collaboration with Kayron Global Tech Services as we embrace digital transformation and improve the management of our school.\n\nI would recommend their software development services to other educational institutions seeking technology-driven management solutions."
+    }
+  }
+]

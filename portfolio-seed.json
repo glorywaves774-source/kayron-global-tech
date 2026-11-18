@@ -44,8 +44,12 @@
     "url": "https://his-grace-academy-ld9w.onrender.com"
   },
   {
-    "name": "Kings Gate International School System",
-    "description": "School management system for Kings Gate International School, Saboba, covering student records, fee invoices and receipts, attendance, assessments and report cards, staff records and school reports. It became the foundation for KENDRA.",
+    "name": "Kings Gate International School",
+    "project": "School Management System",
+    "client": "Kings Gate International School",
+    "industry": "Education",
+    "service": "Custom Software Development",
+    "description": "Kayron Global Tech Services designed and developed a customized School Management System for Kings Gate International School.\n\nThe solution supports the management of student information, staff records and essential school administration activities through a centralized digital platform.\n\nThe project demonstrates our commitment to developing practical, user-friendly and scalable software solutions for educational institutions.",
     "url": "https://kings-gate-school-system.onrender.com"
   },
   {

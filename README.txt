@@ -23,6 +23,9 @@ Projects added in the admin dashboard appear on the public Work page (/portfolio
 CONTACT DETAILS
 Phone, WhatsApp and address shown on the Contact page and footer come from assets/config.js. Leave a value empty to hide it.
 
+CONTENT UPDATES
+content-updates.json holds one-time updates (project details, testimonials). Each has an id and is applied once on start-up; later admin edits are never overwritten. Projects can also be edited in the admin (Edit button).
+
 TESTIMONIALS
 Add real client quotes (with permission) in the admin dashboard. They appear on the home page under "Trusted by"; the testimonials block stays hidden until at least one exists.
 

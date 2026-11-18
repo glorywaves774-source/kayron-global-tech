@@ -59,3 +59,16 @@ html.pn-open .wa-float{visibility:hidden}
 .team-vision{margin:0 0 26px;padding:18px 20px 18px 22px;border-radius:16px;border-left:4px solid var(--orange);
   background:var(--glass-soft);font:600 17px/1.55 'Manrope',sans-serif;color:var(--heading)}
 @media (max-width:700px){.team-card:only-child picture{margin:0;border-radius:0;box-shadow:none}.team-vision{font-size:16px}}
+/* Work page: project details */
+.portfolio-project{margin:-6px 0 12px!important;font-weight:700;font-size:14px!important;color:var(--accent)!important}
+.portfolio-tags{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.portfolio-tags li{padding:5px 10px;border-radius:10px;font-size:12px;font-weight:700;color:var(--heading);
+  background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--au-2) 12%,transparent));border:1px solid var(--glass-edge)}
+.portfolio-client{font-size:13px!important;margin:0 0 16px!important}
+.portfolio-client span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--soft)}
+/* long testimonials keep their paragraphs */
+.testimonial blockquote{white-space:pre-line}
+.testimonial-grid:has(> .testimonial:only-child){grid-template-columns:minmax(0,900px)}
+.testimonial:only-child{padding:36px 40px}
+.testimonial:only-child blockquote{font-size:17px}
+@media (max-width:600px){.testimonial:only-child{padding:26px 22px}.testimonial:only-child blockquote{font-size:15.5px}}
