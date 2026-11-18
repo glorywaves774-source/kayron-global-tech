@@ -50,8 +50,9 @@
     .then((data) => {
       const projects = Array.isArray(data.projects) ? data.projects : [];
       grid.replaceChildren();
-      if (!projects.length) { grid.hidden = true; empty.hidden = false; return; }
+      if (!projects.length) { grid.hidden = true; empty.hidden = false; if (window.kayronReveal) window.kayronReveal([empty]); return; }
       projects.forEach((p, i) => grid.append(card(p, i)));
+      if (window.kayronReveal) window.kayronReveal(grid.children);
     })
     .catch(() => {
       grid.replaceChildren();
