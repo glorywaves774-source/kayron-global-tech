@@ -1,6 +1,6 @@
 KAYRON GLOBAL TECH SERVICES — WEBSITE + ADMIN MVP
 
-Public pages: Home, About, Services, Work (portfolio), Contact.
+Public pages: Home, About, Services, Products, Work (portfolio), Contact, Privacy notice.
 
 DESIGN
 "Aurora" look: aurora background, floating glass panels, light/dark switch on every page (follows the device until chosen), gentle scroll animations (switched off for visitors who ask for reduced motion), slide-in phone menu and bottom tab bar. Files: assets/styles.css (look and motion), assets/phone-nav.css + phone-nav.js (phone menu), assets/mobile.css (phones, loaded last), assets/theme.js (light/dark), assets/admin.css (admin). Logos and icons are in assets/brand/.
@@ -20,6 +20,12 @@ The contact form now submits to /api/enquiries and stores enquiries in DATA_DIR/
 PORTFOLIO
 Projects added in the admin dashboard appear on the public Work page (/portfolio.html), newest first, via the read-only /api/projects endpoint. Project links must be http:// or https:// addresses; an address typed without a scheme gets https:// added. On first start, the projects in portfolio-seed.json are imported once if the portfolio is empty; after that, the admin dashboard is the only place projects are managed (deleted projects are not re-imported). If no projects exist, the page shows a "case studies coming soon" message with a contact button.
 
+CONTACT DETAILS
+Phone, WhatsApp and address shown on the Contact page and footer come from assets/config.js. Leave a value empty to hide it.
+
+TESTIMONIALS
+Add real client quotes (with permission) in the admin dashboard. They appear on the home page under "Trusted by"; the testimonials block stays hidden until at least one exists.
+
 ADMIN DASHBOARD
 Set ADMIN_PASSWORD and SESSION_SECRET before launch. Admin can review enquiries and update their status, add/delete portfolio projects, and edit the four service names and descriptions. Admin login is at /admin.html. Use a long unique password; never publish the .env file or secrets.
 
@@ -29,6 +35,6 @@ The included render.yaml defines a Node web service and a persistent disk mounte
 IMPORTANT LIMITATIONS / LAUNCH CHECKLIST
 - This is a lightweight first backend release using a JSON file store, suitable for a small initial site. For larger workloads or multiple server instances, migrate to managed PostgreSQL.
 - Configure Resend and verify the sender domain before expecting automatic email notifications.
-- Confirm company address, phone/WhatsApp, social links, team, project details, and legal/privacy text before public launch.
+- Review the privacy notice (privacy.html) and add social links before public launch.
 - Configure DNS/domain, HTTPS, backups, monitoring and spam protection review.
 - Admin cookies use HttpOnly and SameSite protections. Deploy behind HTTPS and use a strong unique admin password and secret.
