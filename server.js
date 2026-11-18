@@ -38,10 +38,17 @@ function sameOrigin(req){const origin=req.headers.origin;if(!origin)return true;
 async function body(req){let s='';for await(const chunk of req){s+=chunk;if(s.length>20000)throw new Error('Request too large');}return JSON.parse(s||'{}');}
 // Only allow http(s) links so a stored project URL can never become a javascript: link on the public site.
 function safeLink(value){value=String(value||'').trim();if(!value)return '';if(!/^[a-z][a-z0-9+.-]*:/i.test(value))value='https://'+value;try{const u=new URL(value);return (u.protocol==='http:'||u.protocol==='https:')&&u.hostname.includes('.')?u.href:'';}catch{return '';}}
-const hits=new Map();function limited(ip){const now=Date.now(),a=(hits.get(ip)||[]).filter(t=>now-t<60000);a.push(now);hits.set(ip,a);return a.length>8;}
+// Render sits behind Cloudflare, which writes the visitor's real address to CF-Connecting-IP and overwrites any
+// value the visitor sends. Without it (local runs) fall back to the socket address.
+function clientIp(req){const cf=String(req.headers['cf-connecting-ip']||'').trim();return cf||req.socket.remoteAddress||'unknown';}
+const hits=new Map();setInterval(()=>{const now=Date.now();for(const [k,a] of hits){const r=a.filter(t=>now-t<60000);if(r.length)hits.set(k,r);else hits.delete(k);}},300000).unref();function limited(ip){const now=Date.now(),a=(hits.get(ip)||[]).filter(t=>now-t<60000);a.push(now);hits.set(ip,a);return a.length>8;}
 async function notify(item){if(!RESEND_KEY||!EMAIL_FROM)return false;const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${RESEND_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:EMAIL_FROM,to:[EMAIL_TO],reply_to:item.email,subject:`Website enquiry: ${item.service}`,text:`Name: ${item.name}\nEmail: ${item.email}\nService: ${item.service}\n\n${item.message}`})});return r.ok;}
-const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.txt':'text/plain; charset=utf-8'};
-const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');const ip=req.socket.remoteAddress||'unknown';
+// Public files: the site's pages, everything under /assets/, and the search-engine files. Nothing else in the project folder is served.
+const PUBLIC_PAGES=new Set(['/index.html','/about.html','/services.html','/products.html','/portfolio.html','/contact.html','/privacy.html','/admin.html','/404.html','/robots.txt','/sitemap.xml']);
+function isPublic(p){return PUBLIC_PAGES.has(p)||(p.startsWith('/assets/')&&!p.includes('..'));}
+function notFound(res){fs.readFile(path.join(ROOT,'404.html'),(err,data)=>err?send(res,404,'Not found','text/plain; charset=utf-8'):send(res,404,data,'text/html; charset=utf-8'));}
+const mime={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8','.json':'application/json; charset=utf-8','.ico':'image/x-icon'};
+const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');const ip=clientIp(req);
  try{
   if(req.method==='POST'&&!sameOrigin(req))return send(res,403,{error:'Request origin rejected'});
   if(url.pathname==='/api/health'&&req.method==='GET')return send(res,200,{ok:true});
@@ -49,7 +56,8 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
   if(url.pathname==='/api/projects'&&req.method==='GET')return send(res,200,{projects:db.projects.map(({id,name,description,url,createdAt})=>({id,name,description,url:safeLink(url),createdAt}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
   if(url.pathname==='/api/enquiries'&&req.method==='POST'){
    if(limited(ip))return send(res,429,{error:'Too many submissions. Please try again later.'});
-   const b=await body(req);const name=String(b.name||'').trim(),email=String(b.email||'').trim(),service=String(b.service||'').trim(),message=String(b.message||'').trim();
+   const b=await body(req);if(String(b.website||'').trim())return send(res,201,{ok:true,message:'Thank you. Your enquiry has been received.'});
+   const name=String(b.name||'').trim(),email=String(b.email||'').trim(),service=String(b.service||'').trim(),message=String(b.message||'').trim();
    if(name.length<2||name.length>100||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||service.length>120||message.length<10||message.length>5000)return send(res,400,{error:'Please provide a valid name, email, service and message (10–5000 characters).'});
    const item={id:crypto.randomUUID(),name,email,service,message,createdAt:new Date().toISOString(),status:'new',emailSent:false};db.enquiries.unshift(item);save();try{item.emailSent=await notify(item);save();}catch{}return send(res,201,{ok:true,message:'Thank you. Your enquiry has been received.'});
   }
@@ -77,8 +85,8 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
    const em=url.pathname.match(/^\/api\/admin\/enquiries\/([\w-]+)$/);if(em&&req.method==='PATCH'){const b=await body(req),item=db.enquiries.find(x=>x.id===em[1]);if(!item)return send(res,404,{error:'Not found'});if(['new','in-progress','resolved'].includes(b.status))item.status=b.status;save();return send(res,200,item);}
    return send(res,404,{error:'Not found'});
   }
-  let requested=decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname);const file=path.resolve(ROOT,'.'+requested);if(!file.startsWith(ROOT+path.sep))return send(res,403,'Forbidden','text/plain');
-  fs.readFile(file,(err,data)=>{if(err)return send(res,404,'Not found','text/plain; charset=utf-8');send(res,200,data,mime[path.extname(file)]||'application/octet-stream');});
+  let requested=decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname);const file=path.resolve(ROOT,'.'+requested);if(!file.startsWith(ROOT+path.sep)||!isPublic(requested))return notFound(res);
+  fs.readFile(file,(err,data)=>{if(err)return notFound(res);send(res,200,data,mime[path.extname(file)]||'application/octet-stream');});
  }catch(e){send(res,e.message==='Request too large'?413:400,{error:e.message==='Request too large'?e.message:'Unable to process request'});}
 });
 seedPortfolio();

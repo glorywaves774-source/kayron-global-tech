@@ -26,6 +26,15 @@ Phone, WhatsApp and address shown on the Contact page and footer come from asset
 TESTIMONIALS
 Add real client quotes (with permission) in the admin dashboard. They appear on the home page under "Trusted by"; the testimonials block stays hidden until at least one exists.
 
+SEARCH ENGINES AND SHARING
+Every page has link-preview tags (assets/brand/share.jpg) and a canonical address; the home page describes the business for Google. robots.txt and sitemap.xml list the public pages. When you connect your own domain, replace https://kayron-global-tech.onrender.com in robots.txt, sitemap.xml and the page heads (SITE in the page builder) with the new address.
+
+SECURITY NOTES
+The server only serves the public pages, /assets/, robots.txt and sitemap.xml; every other path gets the branded 404 page. The contact form limit counts each visitor separately using Cloudflare's CF-Connecting-IP header on Render, and a hidden spam-trap field quietly drops bot submissions.
+
+WHATSAPP BUTTON
+The floating WhatsApp button uses the whatsapp number in assets/config.js. Empty the number to hide the button.
+
 ADMIN DASHBOARD
 Set ADMIN_PASSWORD and SESSION_SECRET before launch. Admin can review enquiries and update their status, add/delete portfolio projects, and edit the four service names and descriptions. Admin login is at /admin.html. Use a long unique password; never publish the .env file or secrets.
 
