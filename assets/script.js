@@ -72,7 +72,7 @@
     dots.forEach(function (d) { if (Number(d.getAttribute('data-go')) === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); });
     if (caption) caption.textContent = box.getAttribute('data-cap' + i) || '';
   }
-  function start() { if (!reduce && !timer && count > 1) timer = setInterval(function () { show(i + 1); }, 5000); }
+  function start() { if (!reduce && !timer && count > 1) timer = setInterval(function () { show(i + 1); }, 4000); }
   function stop() { clearInterval(timer); timer = null; }
   dots.forEach(function (d) { d.addEventListener('click', function () { stop(); show(Number(d.getAttribute('data-go'))); start(); }); });
   box.addEventListener('mouseenter', stop); box.addEventListener('mouseleave', start);
