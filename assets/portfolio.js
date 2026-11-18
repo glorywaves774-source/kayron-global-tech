@@ -34,7 +34,9 @@
       link.href = project.url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
-      link.textContent = 'View project';
+      link.textContent = 'Open live system';
+      link.setAttribute('aria-label', 'Open ' + project.name + ' (opens in a new tab)');
+      article.classList.add('has-link');
       const arrow = document.createElement('span');
       arrow.textContent = '↗';
       link.append(arrow);

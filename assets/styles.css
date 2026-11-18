@@ -19,3 +19,8 @@
 .portfolio-empty p{color:var(--muted);font-size:15px;margin:0 0 28px}
 @media(max-width:850px){.portfolio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.portfolio-grid{grid-template-columns:1fr}.portfolio-section{padding-block:40px 70px}.portfolio-card{min-height:0}}
+/* Whole card opens the project when it has a link */
+.portfolio-card.has-link{cursor:pointer}
+.portfolio-card.has-link .portfolio-link:after{content:'';position:absolute;inset:0}
+.portfolio-card.has-link:hover .portfolio-link{color:var(--blue)}
+.portfolio-card .portfolio-link:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
