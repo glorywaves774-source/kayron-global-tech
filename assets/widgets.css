@@ -19,3 +19,9 @@ html.pn-open .wa-float{visibility:hidden}
 .hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
 /* 404 */
 .not-found .hero-actions{margin-top:26px}
+/* footer social links */
+.footer-social{display:flex;gap:10px}
+.footer-social a{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;color:#e6eefa;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);transition:transform .3s var(--ease),background .3s,color .3s}
+.footer-social a:hover{transform:translateY(-3px);background:#1877f2;color:#fff;border-color:transparent}
+.footer-social svg{width:20px;height:20px}
