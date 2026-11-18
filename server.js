@@ -41,6 +41,22 @@ function safeLink(value){value=String(value||'').trim();if(!value)return '';if(!
 // Render sits behind Cloudflare, which writes the visitor's real address to CF-Connecting-IP and overwrites any
 // value the visitor sends. Without it (local runs) fall back to the socket address.
 function clientIp(req){const cf=String(req.headers['cf-connecting-ip']||'').trim();return cf||req.socket.remoteAddress||'unknown';}
+function projectFields(b){const t=(v,n)=>String(v||'').trim().slice(0,n);const name=t(b.name,200),description=String(b.description||'').trim(),rawUrl=String(b.url||'').trim(),urlValue=safeLink(rawUrl);
+ if(name.length<2||name.length>120)return {error:'Project name must be 2–120 characters.'};if(description.length>3000)return {error:'Description must be at most 3000 characters.'};
+ if(rawUrl.length>300||(rawUrl&&!urlValue))return {error:'Project link must be a web address starting with http:// or https://'};
+ return {name,description,urlValue,project:t(b.project,120),client:t(b.client,120),industry:t(b.industry,80),service:t(b.service,120)};}
+// One-time content updates from content-updates.json. Each update has an id and is applied once (recorded in db.appliedUpdates),
+// so later edits made in the admin dashboard are never overwritten by a restart.
+function applyContentUpdates(){let list=[];try{list=JSON.parse(fs.readFileSync(path.join(ROOT,'content-updates.json'),'utf8'));}catch{return;}
+ if(!Array.isArray(db.appliedUpdates))db.appliedUpdates=[];let changed=false;
+ for(const u of list){if(!u||!u.id||db.appliedUpdates.includes(u.id))continue;
+  if(u.project){const f=projectFields(u.project);if(!f.error){const names=[f.name,...(u.project.match||[])];const item=db.projects.find(p=>names.includes(p.name));
+   const keepUrl=item&&item.url;const data={name:f.name,project:f.project,client:f.client,industry:f.industry,service:f.service,description:f.description,url:f.urlValue||keepUrl||''};
+   if(item)Object.assign(item,data);else db.projects.push({id:crypto.randomUUID(),...data,createdAt:new Date().toISOString()});}}
+  if(u.testimonial){const name=String(u.testimonial.name||'').trim(),role=String(u.testimonial.role||'').trim(),quote=String(u.testimonial.quote||'').trim();
+   if(name&&quote&&!db.testimonials.some(t=>t.quote===quote))db.testimonials.push({id:crypto.randomUUID(),name,role,quote,createdAt:new Date().toISOString()});}
+  db.appliedUpdates.push(u.id);changed=true;}
+ if(changed)save();}
 const hits=new Map();setInterval(()=>{const now=Date.now();for(const [k,a] of hits){const r=a.filter(t=>now-t<60000);if(r.length)hits.set(k,r);else hits.delete(k);}},300000).unref();function limited(ip){const now=Date.now(),a=(hits.get(ip)||[]).filter(t=>now-t<60000);a.push(now);hits.set(ip,a);return a.length>8;}
 async function notify(item){if(!RESEND_KEY||!EMAIL_FROM)return false;const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${RESEND_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:EMAIL_FROM,to:[EMAIL_TO],reply_to:item.email,subject:`Website enquiry: ${item.service}`,text:`Name: ${item.name}\nEmail: ${item.email}\nService: ${item.service}\n\n${item.message}`})});return r.ok;}
 // Public files: the site's pages, everything under /assets/, and the search-engine files. Nothing else in the project folder is served.
@@ -53,7 +69,7 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
   if(req.method==='POST'&&!sameOrigin(req))return send(res,403,{error:'Request origin rejected'});
   if(url.pathname==='/api/health'&&req.method==='GET')return send(res,200,{ok:true});
   if(url.pathname==='/api/testimonials'&&req.method==='GET')return send(res,200,{testimonials:db.testimonials.map(({id,name,role,quote})=>({id,name,role,quote}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
-  if(url.pathname==='/api/projects'&&req.method==='GET')return send(res,200,{projects:db.projects.map(({id,name,description,url,createdAt})=>({id,name,description,url:safeLink(url),createdAt}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
+  if(url.pathname==='/api/projects'&&req.method==='GET')return send(res,200,{projects:db.projects.map(({id,name,project,client,industry,service,description,url,createdAt})=>({id,name,project:project||'',client:client||'',industry:industry||'',service:service||'',description,url:safeLink(url),createdAt}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
   if(url.pathname==='/api/enquiries'&&req.method==='POST'){
    if(limited(ip))return send(res,429,{error:'Too many submissions. Please try again later.'});
    const b=await body(req);if(String(b.website||'').trim())return send(res,201,{ok:true,message:'Thank you. Your enquiry has been received.'});
@@ -71,16 +87,17 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
    if(!validSession(req))return send(res,401,{error:'Please sign in'});
    if(url.pathname==='/api/admin/data'&&req.method==='GET')return send(res,200,{enquiries:db.enquiries,projects:db.projects,services:db.services,testimonials:db.testimonials});
    if(url.pathname==='/api/admin/projects'&&req.method==='POST'){
-    const b=await body(req),name=String(b.name||'').trim(),description=String(b.description||'').trim(),rawUrl=String(b.url||'').trim(),urlValue=safeLink(rawUrl);if(name.length<2||name.length>120||description.length>1500||rawUrl.length>300)return send(res,400,{error:'Check project fields'});if(rawUrl&&!urlValue)return send(res,400,{error:'Project link must be a web address starting with http:// or https://'});
-    const p={id:crypto.randomUUID(),name,description,url:urlValue,createdAt:new Date().toISOString()};db.projects.unshift(p);save();return send(res,201,p);
+    const b=await body(req),f=projectFields(b);if(f.error)return send(res,400,{error:f.error});const {name,description,urlValue}=f;
+    const p={id:crypto.randomUUID(),name,project:f.project,client:f.client,industry:f.industry,service:f.service,description,url:urlValue,createdAt:new Date().toISOString()};db.projects.unshift(p);save();return send(res,201,p);
    }
    if(url.pathname==='/api/admin/testimonials'&&req.method==='POST'){
     const b=await body(req),name=String(b.name||'').trim(),role=String(b.role||'').trim(),quote=String(b.quote||'').trim();
-    if(name.length<2||name.length>120||role.length>160||quote.length<10||quote.length>800)return send(res,400,{error:'Please give a name (2–120 characters) and a quote (10–800 characters).'});
+    if(name.length<2||name.length>120||role.length>160||quote.length<10||quote.length>2000)return send(res,400,{error:'Please give a name (2–120 characters) and a quote (10–2000 characters).'});
     const t={id:crypto.randomUUID(),name,role,quote,createdAt:new Date().toISOString()};db.testimonials.unshift(t);save();return send(res,201,t);
    }
    const tm=url.pathname.match(/^\/api\/admin\/testimonials\/([\w-]+)$/);if(tm&&req.method==='DELETE'){db.testimonials=db.testimonials.filter(t=>t.id!==tm[1]);save();return send(res,200,{ok:true});}
    const sm=url.pathname.match(/^\/api\/admin\/services\/([\w-]+)$/);if(sm&&req.method==='PATCH'){const b=await body(req),item=db.services.find(x=>x.id===sm[1]);if(!item)return send(res,404,{error:'Not found'});const name=String(b.name||'').trim(),description=String(b.description||'').trim();if(name.length<2||name.length>120||description.length>500)return send(res,400,{error:'Check service fields'});item.name=name;item.description=description;save();return send(res,200,item);}
+   const pe=url.pathname.match(/^\/api\/admin\/projects\/([\w-]+)$/);if(pe&&req.method==='PATCH'){const item=db.projects.find(x=>x.id===pe[1]);if(!item)return send(res,404,{error:'Not found'});const f=projectFields(await body(req));if(f.error)return send(res,400,{error:f.error});Object.assign(item,{name:f.name,project:f.project,client:f.client,industry:f.industry,service:f.service,description:f.description,url:f.urlValue});save();return send(res,200,item);}
    const pm=url.pathname.match(/^\/api\/admin\/projects\/([\w-]+)$/);if(pm&&req.method==='DELETE'){db.projects=db.projects.filter(p=>p.id!==pm[1]);save();return send(res,200,{ok:true});}
    const em=url.pathname.match(/^\/api\/admin\/enquiries\/([\w-]+)$/);if(em&&req.method==='PATCH'){const b=await body(req),item=db.enquiries.find(x=>x.id===em[1]);if(!item)return send(res,404,{error:'Not found'});if(['new','in-progress','resolved'].includes(b.status))item.status=b.status;save();return send(res,200,item);}
    return send(res,404,{error:'Not found'});
@@ -90,4 +107,5 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
  }catch(e){send(res,e.message==='Request too large'?413:400,{error:e.message==='Request too large'?e.message:'Unable to process request'});}
 });
 seedPortfolio();
+applyContentUpdates();
 server.listen(PORT,()=>console.log(`Kayron site running on ${PORT}`));

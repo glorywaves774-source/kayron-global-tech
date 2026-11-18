@@ -22,10 +22,38 @@
 
     article.append(number, title);
 
+    if (project.project) {
+      const sub = document.createElement('p');
+      sub.className = 'portfolio-project';
+      sub.textContent = project.project;
+      article.append(sub);
+    }
+    const tags = [['Industry', project.industry], ['Service', project.service]].filter((t) => t[1]);
+    if (tags.length) {
+      const ul = document.createElement('ul');
+      ul.className = 'portfolio-tags';
+      tags.forEach(([label, value]) => {
+        const li = document.createElement('li');
+        li.title = label;
+        li.textContent = value;
+        ul.append(li);
+      });
+      article.append(ul);
+    }
+
     if (project.description) {
       const desc = document.createElement('p');
       desc.textContent = project.description;
       article.append(desc);
+    }
+
+    if (project.client) {
+      const client = document.createElement('p');
+      client.className = 'portfolio-client';
+      const label = document.createElement('span');
+      label.textContent = 'Client';
+      client.append(label, document.createTextNode(' ' + project.client));
+      article.append(client);
     }
 
     if (project.url && isWebLink(project.url)) {
