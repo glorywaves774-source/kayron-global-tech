@@ -61,5 +61,10 @@
     "name": "Divine Destiny Clinic Management System",
     "description": "Clinic management system for a private hospital in Ghana: patient registration, appointments, OPD encounters, wards and beds, admissions, invoicing and reports. Runs on one clinic computer and serves other devices on the clinic network, with automatic daily backups.",
     "url": "https://devine-destiny-clinic-3.onrender.com"
+  },
+  {
+    "name": "NCRI-Ghana",
+    "description": "Website for the Northern Community Resilience Initiative (NCRI-Ghana), a development organisation in Saboba, Northern Region, working with women, girls, young people and vulnerable households. The site presents the organisation's six programme pillars: child protection and education, women and girls, agriculture and rural livelihoods, youth, climate and community resilience, and water, sanitation and hygiene. It includes the organisation's vision, mission and values, photo stories for each area of work, impact figures and learning, links to the UN Sustainable Development Goals, a gallery and news, and clear routes to partner, volunteer, donate or get in touch.",
+    "url": "https://ncri-ghana-meyl.onrender.com"
   }
 ]
