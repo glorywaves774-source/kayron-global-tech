@@ -32,7 +32,11 @@
   {
     "name": "HOLIDO Website & Content Management",
     "description": "Website and content management system for Holistic Development Organisation (HOLIDO) in Tamale: programmes, projects, impact stories, news, resources and donations, with a private document library, draft and publish, revision history and automatic daily backups.",
-    "url": "https://holido-4df6.onrender.com"
+    "url": "https://holido-1.onrender.com",
+    "replaces": [
+      "https://holido.org",
+      "https://holido-4df6.onrender.com"
+    ]
   },
   {
     "name": "His Grace Academy Management System",
