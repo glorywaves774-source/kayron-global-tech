@@ -18,7 +18,7 @@
   }
   // Groups: items in the same group come in one after another.
   var GROUPS = ['.service-grid > *', '.process-grid > *', '.values-grid > *', '.portfolio-grid > *', '.strip-inner > *',
-    '.service-detail-list > *', '.about-content > *', '.contact-layout > *', '.industry-grid > *', '.product-grid > *', '.client-list > *'];
+    '.service-detail-list > *', '.about-content > *', '.contact-layout > *', '.industry-grid > *', '.product-grid > *', '.client-list > *', '.team-grid > *'];
   var SINGLES = ['.legal-body', '.product-note', '.section-heading', '.feature-layout', '.cta-inner', '.values-band > .wrap', '.portfolio-empty'];
   function reveal(nodes) {
     if (!observer) return;
