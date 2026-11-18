@@ -1,6 +1,9 @@
 KAYRON GLOBAL TECH SERVICES — WEBSITE + ADMIN MVP
 
 Public pages: Home, About, Services, Work (portfolio), Contact.
+
+DESIGN
+"Aurora" look: aurora background, floating glass panels, light/dark switch on every page (follows the device until chosen), gentle scroll animations (switched off for visitors who ask for reduced motion), slide-in phone menu and bottom tab bar. Files: assets/styles.css (look and motion), assets/phone-nav.css + phone-nav.js (phone menu), assets/mobile.css (phones, loaded last), assets/theme.js (light/dark), assets/admin.css (admin). Logos and icons are in assets/brand/.
 Private admin: /admin.html
 Backend: Node.js built-in HTTP server; JSON data store; password-protected admin session.
 
