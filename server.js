@@ -22,6 +22,7 @@ const initial = { enquiries: [], projects: [], services: [
 ]};
 function readDB(){try{return JSON.parse(fs.readFileSync(DB_FILE,'utf8'));}catch{return structuredClone(initial);}}
 let db=readDB();
+if(!Array.isArray(db.testimonials))db.testimonials=[];
 // One-time import of portfolio-seed.json. Runs only if the portfolio has never been seeded and is empty,
 // so projects deleted later in the admin dashboard are not brought back on restart.
 function seedPortfolio(){if(db.portfolioSeeded){fillSeedLinks();save();return;}if(!Array.isArray(db.projects))db.projects=[];if(!db.projects.length){try{const seed=JSON.parse(fs.readFileSync(path.join(ROOT,'portfolio-seed.json'),'utf8'));const base=Date.now();db.projects=seed.filter(p=>p&&String(p.name||'').trim().length>=2).map((p,i)=>({id:crypto.randomUUID(),name:String(p.name).trim().slice(0,120),description:String(p.description||'').trim().slice(0,1500),url:safeLink(p.url),createdAt:new Date(base-i*1000).toISOString()}));}catch(e){console.warn('Portfolio seed not loaded:',e.message);}}db.portfolioSeeded=true;fillSeedLinks();save();}
@@ -44,6 +45,7 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
  try{
   if(req.method==='POST'&&!sameOrigin(req))return send(res,403,{error:'Request origin rejected'});
   if(url.pathname==='/api/health'&&req.method==='GET')return send(res,200,{ok:true});
+  if(url.pathname==='/api/testimonials'&&req.method==='GET')return send(res,200,{testimonials:db.testimonials.map(({id,name,role,quote})=>({id,name,role,quote}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
   if(url.pathname==='/api/projects'&&req.method==='GET')return send(res,200,{projects:db.projects.map(({id,name,description,url,createdAt})=>({id,name,description,url:safeLink(url),createdAt}))},'application/json; charset=utf-8',{'Cache-Control':'no-cache'});
   if(url.pathname==='/api/enquiries'&&req.method==='POST'){
    if(limited(ip))return send(res,429,{error:'Too many submissions. Please try again later.'});
@@ -59,11 +61,17 @@ const server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http:
   if(url.pathname==='/api/admin/logout'&&req.method==='POST')return send(res,200,{ok:true},'application/json; charset=utf-8',{'Set-Cookie':`kayron_admin=; HttpOnly; ${process.env.NODE_ENV==='production'?'Secure; ':''}SameSite=Strict; Path=/; Max-Age=0`});
   if(url.pathname.startsWith('/api/admin/')){
    if(!validSession(req))return send(res,401,{error:'Please sign in'});
-   if(url.pathname==='/api/admin/data'&&req.method==='GET')return send(res,200,{enquiries:db.enquiries,projects:db.projects,services:db.services});
+   if(url.pathname==='/api/admin/data'&&req.method==='GET')return send(res,200,{enquiries:db.enquiries,projects:db.projects,services:db.services,testimonials:db.testimonials});
    if(url.pathname==='/api/admin/projects'&&req.method==='POST'){
     const b=await body(req),name=String(b.name||'').trim(),description=String(b.description||'').trim(),rawUrl=String(b.url||'').trim(),urlValue=safeLink(rawUrl);if(name.length<2||name.length>120||description.length>1500||rawUrl.length>300)return send(res,400,{error:'Check project fields'});if(rawUrl&&!urlValue)return send(res,400,{error:'Project link must be a web address starting with http:// or https://'});
     const p={id:crypto.randomUUID(),name,description,url:urlValue,createdAt:new Date().toISOString()};db.projects.unshift(p);save();return send(res,201,p);
    }
+   if(url.pathname==='/api/admin/testimonials'&&req.method==='POST'){
+    const b=await body(req),name=String(b.name||'').trim(),role=String(b.role||'').trim(),quote=String(b.quote||'').trim();
+    if(name.length<2||name.length>120||role.length>160||quote.length<10||quote.length>800)return send(res,400,{error:'Please give a name (2–120 characters) and a quote (10–800 characters).'});
+    const t={id:crypto.randomUUID(),name,role,quote,createdAt:new Date().toISOString()};db.testimonials.unshift(t);save();return send(res,201,t);
+   }
+   const tm=url.pathname.match(/^\/api\/admin\/testimonials\/([\w-]+)$/);if(tm&&req.method==='DELETE'){db.testimonials=db.testimonials.filter(t=>t.id!==tm[1]);save();return send(res,200,{ok:true});}
    const sm=url.pathname.match(/^\/api\/admin\/services\/([\w-]+)$/);if(sm&&req.method==='PATCH'){const b=await body(req),item=db.services.find(x=>x.id===sm[1]);if(!item)return send(res,404,{error:'Not found'});const name=String(b.name||'').trim(),description=String(b.description||'').trim();if(name.length<2||name.length>120||description.length>500)return send(res,400,{error:'Check service fields'});item.name=name;item.description=description;save();return send(res,200,item);}
    const pm=url.pathname.match(/^\/api\/admin\/projects\/([\w-]+)$/);if(pm&&req.method==='DELETE'){db.projects=db.projects.filter(p=>p.id!==pm[1]);save();return send(res,200,{ok:true});}
    const em=url.pathname.match(/^\/api\/admin\/enquiries\/([\w-]+)$/);if(em&&req.method==='PATCH'){const b=await body(req),item=db.enquiries.find(x=>x.id===em[1]);if(!item)return send(res,404,{error:'Not found'});if(['new','in-progress','resolved'].includes(b.status))item.status=b.status;save();return send(res,200,item);}
