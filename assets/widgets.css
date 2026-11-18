@@ -47,3 +47,15 @@ html.pn-open .wa-float{visibility:hidden}
 .team-card:only-child .team-role{font-size:16px;margin-bottom:26px}
 .team-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px}
 @media (max-width:700px){.team-card:only-child{grid-template-columns:1fr}.team-card:only-child .team-info{padding:24px 22px}.team-actions .btn{width:100%}}
+/* founder profile */
+.team-card:only-child{align-items:start}
+.team-card:only-child picture{aspect-ratio:4/5;margin:28px 0 28px 28px;border-radius:18px;box-shadow:0 18px 36px -18px rgba(11,45,99,.5)}
+.team-bio p{color:var(--muted);font-size:15px;margin:0 0 14px}
+.tp-label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--soft);margin-bottom:10px}
+.team-philosophy{margin:22px 0 18px}
+.team-philosophy ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.team-philosophy li{padding:8px 14px;border-radius:12px;font-weight:700;font-size:14px;color:var(--heading);
+  background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--au-4) 14%,transparent));border:1px solid var(--glass-edge)}
+.team-vision{margin:0 0 26px;padding:18px 20px 18px 22px;border-radius:16px;border-left:4px solid var(--orange);
+  background:var(--glass-soft);font:600 17px/1.55 'Manrope',sans-serif;color:var(--heading)}
+@media (max-width:700px){.team-card:only-child picture{margin:0;border-radius:0;box-shadow:none}.team-vision{font-size:16px}}
