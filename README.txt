@@ -1,0 +1,28 @@
+KAYRON GLOBAL TECH SERVICES — WEBSITE + ADMIN MVP
+
+Public pages: Home, About, Services, Contact.
+Private admin: /admin.html
+Backend: Node.js built-in HTTP server; JSON data store; password-protected admin session.
+
+LOCAL RUN
+1. Install Node.js 20 or later.
+2. Copy .env.example to .env and set ADMIN_PASSWORD and SESSION_SECRET.
+3. Export those variables in your shell (or configure them in your hosting provider).
+4. Run: npm start
+5. Open http://localhost:3000 and http://localhost:3000/admin.html
+
+CONTACT ENQUIRIES
+The contact form now submits to /api/enquiries and stores enquiries in DATA_DIR/site-data.json. For automatic email notifications, configure RESEND_API_KEY and EMAIL_FROM with a sender address verified in your Resend account. Notifications are sent to info@kayronglobaltech.com. Enquiries remain stored if email delivery is not configured or fails.
+
+ADMIN DASHBOARD
+Set ADMIN_PASSWORD and SESSION_SECRET before launch. Admin can review enquiries and update their status, add/delete portfolio projects, and edit the four service names and descriptions. Admin login is at /admin.html. Use a long unique password; never publish the .env file or secrets.
+
+RENDER DEPLOYMENT
+The included render.yaml defines a Node web service and a persistent disk mounted at /var/data. Create a Render Blueprint from this repository, set ADMIN_PASSWORD, RESEND_API_KEY and EMAIL_FROM in the Render dashboard, then deploy. Persistent disk is required to retain JSON data across deploys/restarts. Confirm the current Render plan supports persistent disks before deployment.
+
+IMPORTANT LIMITATIONS / LAUNCH CHECKLIST
+- This is a lightweight first backend release using a JSON file store, suitable for a small initial site. For larger workloads or multiple server instances, migrate to managed PostgreSQL.
+- Configure Resend and verify the sender domain before expecting automatic email notifications.
+- Confirm company address, phone/WhatsApp, social links, team, project details, and legal/privacy text before public launch.
+- Configure DNS/domain, HTTPS, backups, monitoring and spam protection review.
+- Admin cookies use HttpOnly and SameSite protections. Deploy behind HTTPS and use a strong unique admin password and secret.

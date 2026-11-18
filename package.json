@@ -1,0 +1,1 @@
+{"name":"kayron-global-tech-website","version":"1.0.0","private":true,"description":"Kayron Global Tech Services website and admin dashboard","scripts":{"start":"node server.js"},"engines":{"node":">=20"}}
