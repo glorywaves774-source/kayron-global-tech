@@ -1,6 +1,6 @@
 KAYRON GLOBAL TECH SERVICES — WEBSITE + ADMIN MVP
 
-Public pages: Home, About, Services, Contact.
+Public pages: Home, About, Services, Work (portfolio), Contact.
 Private admin: /admin.html
 Backend: Node.js built-in HTTP server; JSON data store; password-protected admin session.
 
@@ -13,6 +13,9 @@ LOCAL RUN
 
 CONTACT ENQUIRIES
 The contact form now submits to /api/enquiries and stores enquiries in DATA_DIR/site-data.json. For automatic email notifications, configure RESEND_API_KEY and EMAIL_FROM with a sender address verified in your Resend account. Notifications are sent to info@kayronglobaltech.com. Enquiries remain stored if email delivery is not configured or fails.
+
+PORTFOLIO
+Projects added in the admin dashboard appear on the public Work page (/portfolio.html), newest first, via the read-only /api/projects endpoint. Project links must be http:// or https:// addresses; an address typed without a scheme gets https:// added. Until the first project is added, the page shows a "case studies coming soon" message with a contact button.
 
 ADMIN DASHBOARD
 Set ADMIN_PASSWORD and SESSION_SECRET before launch. Admin can review enquiries and update their status, add/delete portfolio projects, and edit the four service names and descriptions. Admin login is at /admin.html. Use a long unique password; never publish the .env file or secrets.
