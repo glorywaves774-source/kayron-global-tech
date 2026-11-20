@@ -42,5 +42,18 @@
       "url": "https://ncri-ghana-meyl.onrender.com",
       "match": []
     }
+  },
+  {
+    "id": "2026-11-20-ai-workforce-project",
+    "project": {
+      "name": "AI Workforce",
+      "project": "AI Employee Platform (SaaS)",
+      "client": "Kayron Global Tech Services (own product)",
+      "industry": "Business services",
+      "service": "Software Development & AI",
+      "description": "A subscription platform that gives each business a private team of AI employees: an AI Team Coordinator plus specialists in finance, marketing, customer service, human resources, operations, projects, research and technology. Businesses describe a job in plain words; the coordinator assigns specialists and returns one combined draft for a person to approve. Includes a knowledge library with encrypted document storage and Google Drive import, per-employee access control, approvals, analytics, plans in Ghana cedis with a 14-day free trial, and Kombian, a built-in help assistant.",
+      "url": "https://ai-workforce-h0dp.onrender.com",
+      "match": []
+    }
   }
 ]
