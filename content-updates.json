@@ -55,5 +55,18 @@
       "url": "https://ai-workforce-h0dp.onrender.com",
       "match": []
     }
+  },
+  {
+    "id": "2026-11-23-churchplus-project",
+    "project": {
+      "name": "ChurchPlus",
+      "project": "Church Management Platform (SaaS)",
+      "client": "Kayron Global Tech Services (own product)",
+      "industry": "Churches & faith organisations",
+      "service": "Software Development",
+      "description": "A subscription church management platform where every church gets its own private workspace, from a single assembly to a denomination with many branches. It covers members and families, first-timers and follow-up, attendance and check-in, services and duty rotas, departments, clergy and staff, tithes, offerings, pledges and expenses with numbered receipts, double-entry accounts and financial statements, events, sermons and media, prayer requests, pastoral counselling and children's ministry with safe pick-up codes, and SMS, WhatsApp and email messaging. Each church also gets a member portal and its own public website. Counselling, confidential prayer and children's records are kept strictly private, and ChurchPlus staff cannot open any church's records. Plans in Ghana cedis with a 14-day free trial; installs as an app on phones and computers.",
+      "url": "https://churchplus-xhdp.onrender.com",
+      "match": []
+    }
   }
 ]
